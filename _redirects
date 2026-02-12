@@ -1,0 +1,13 @@
+# Netlify Redirects File
+
+# Redirect shortcuts to sections
+/book          /#book          200
+/contact       /#contact       200
+/services      /#services      200
+/about         /#about         200
+/gallery       /#gallery       200
+/team          /#team          200
+
+# 404 Fallback
+/*             /index.html     404
+
