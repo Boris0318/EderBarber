@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Validate form
         if (!formData.name || !formData.phone || !formData.service || !formData.date || !formData.time) {
-            showNotification('Please fill in all required fields.', 'error');
+            showNotification('Por favor completa todos los campos requeridos.', 'error');
             return;
         }
 
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // For now, we'll just show a success message
         console.log('Booking request:', formData);
         
-        showNotification('Thank you! Your appointment request has been received. We will contact you shortly to confirm.', 'success');
+        showNotification('¡Gracias! Tu solicitud de cita ha sido recibida. Te contactaremos pronto para confirmar.', 'success');
         
         // Reset form
         bookingForm.reset();
@@ -416,8 +416,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // ===================================
     // Console Welcome Message
     // ===================================
-    console.log('%c👋 Welcome to Eder Barber Shop!', 'font-size: 20px; font-weight: bold; color: #d4af37;');
-    console.log('%cWebsite built with ❤️', 'font-size: 14px; color: #888;');
+    console.log('%c👋 ¡Bienvenido a Eder Barber Shop!', 'font-size: 20px; font-weight: bold; color: #d4af37;');
+    console.log('%cSitio web diseñado con ❤️ por Sirob Labs', 'font-size: 14px; color: #888;');
 
 });
 

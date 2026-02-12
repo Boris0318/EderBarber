@@ -2,6 +2,10 @@
 
 A professional, modern, and fully responsive website for Eder Barber Shop. Built with pure HTML, CSS, and JavaScript, ready for deployment on Netlify.
 
+**Language:** All content is in Spanish (Español)
+
+**Designed by:** Sirob Labs
+
 ## 🌟 Features
 
 - **Fully Responsive Design** - Works perfectly on all devices (desktop, tablet, mobile)
@@ -351,5 +355,5 @@ Your professional barber shop website is ready to impress customers and attract 
 
 ---
 
-**Built with ❤️ for Eder Barber Shop**
+**Diseñado con ❤️ por Sirob Labs para Eder Barber Shop**
 

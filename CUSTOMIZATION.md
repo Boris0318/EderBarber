@@ -2,6 +2,8 @@
 
 This guide will help you quickly customize the most important parts of your website.
 
+**Note:** All website content is in Spanish. This guide is in English for technical reference.
+
 ## 🎯 Top Priority Customizations
 
 ### 1. Business Contact Information
@@ -338,6 +340,8 @@ After customization:
 5. **Fast Images**: Compress images before uploading (use tinypng.com)
 
 ---
+
+**Designed by Sirob Labs**
 
 Need more help? Check the main README.md file for detailed documentation!
 
