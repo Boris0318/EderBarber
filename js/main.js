@@ -498,6 +498,12 @@ function initializeDynamicContent() {
         element.innerHTML = `${BARBER_CONFIG.address}<br>${BARBER_CONFIG.addressLine2}<br>${BARBER_CONFIG.addressLine3}`;
     });
     
+    // Update footer short address
+    const footerAddress = document.querySelector('.footer-address');
+    if (footerAddress) {
+        footerAddress.textContent = `${BARBER_CONFIG.address}, ${BARBER_CONFIG.addressLine3.split(',')[0]}`;
+    }
+    
     // Update social media links
     updateSocialLinks();
     
