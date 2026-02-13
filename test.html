@@ -1,0 +1,121 @@
+<!DOCTYPE DOCTYPE>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Test - JavaScript Config</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #4CAF50;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .error {
+            border-left-color: #f44336;
+        }
+        .business-name {
+            font-weight: bold;
+            color: #d4af37;
+            font-size: 24px;
+        }
+        code {
+            background: #e0e0e0;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Prueba de Configuración JavaScript</h1>
+    
+    <div class="test-box">
+        <h2>✅ Nombre del Negocio</h2>
+        <p>Valor configurado: <code id="config-value">Cargando...</code></p>
+        <p>Mostrado en página: <span class="business-name">Barbería</span></p>
+    </div>
+
+    <div class="test-box">
+        <h2>📋 Estado del JavaScript</h2>
+        <p id="js-status">Verificando...</p>
+    </div>
+
+    <div class="test-box">
+        <h2>🔍 Elementos Encontrados</h2>
+        <p id="elements-count">Contando...</p>
+        <ul id="elements-list"></ul>
+    </div>
+
+    <div class="test-box">
+        <h2>📝 Instrucciones</h2>
+        <p>Si ves "<strong>Barbería</strong>" arriba en lugar de tu nombre configurado:</p>
+        <ol>
+            <li>Verifica que el archivo <code>js/main.js</code> existe</li>
+            <li>Abre la <strong>Consola del Navegador</strong> (F12 → Console)</li>
+            <li>Busca errores en rojo</li>
+            <li>Verifica que veas el mensaje: "Initializing dynamic content with: [Tu Nombre]"</li>
+        </ol>
+        <p><strong>Solución recomendada:</strong> Usa un servidor local en lugar de abrir el archivo directamente.</p>
+        <code>python3 -m http.server 8000</code>
+    </div>
+
+    <!-- Load the main.js file -->
+    <script src="js/main.js"></script>
+    
+    <!-- Test script -->
+    <script>
+        // Wait a moment for the main script to load
+        setTimeout(() => {
+            const statusEl = document.getElementById('js-status');
+            const configEl = document.getElementById('config-value');
+            const countEl = document.getElementById('elements-count');
+            const listEl = document.getElementById('elements-list');
+            
+            // Check if BARBER_CONFIG is defined
+            if (typeof BARBER_CONFIG !== 'undefined') {
+                statusEl.innerHTML = '✅ <strong>JavaScript cargado correctamente</strong>';
+                configEl.textContent = BARBER_CONFIG.businessName;
+                
+                // Count business-name elements
+                const elements = document.querySelectorAll('.business-name');
+                countEl.textContent = `Se encontraron ${elements.length} elementos con clase "business-name"`;
+                
+                // List all elements and their content
+                elements.forEach((el, index) => {
+                    const li = document.createElement('li');
+                    li.textContent = `Elemento ${index + 1}: "${el.textContent}"`;
+                    if (el.textContent === BARBER_CONFIG.businessName) {
+                        li.style.color = 'green';
+                        li.textContent += ' ✅';
+                    } else {
+                        li.style.color = 'red';
+                        li.textContent += ' ❌ (debería ser "' + BARBER_CONFIG.businessName + '")';
+                    }
+                    listEl.appendChild(li);
+                });
+                
+            } else {
+                statusEl.innerHTML = '❌ <strong>ERROR: BARBER_CONFIG no está definido</strong>';
+                statusEl.parentElement.classList.add('error');
+                configEl.textContent = 'No disponible';
+                countEl.textContent = 'No se puede verificar';
+            }
+            
+            // Log to console
+            console.log('=== TEST DE CONFIGURACIÓN ===');
+            if (typeof BARBER_CONFIG !== 'undefined') {
+                console.log('✅ BARBER_CONFIG encontrado:', BARBER_CONFIG);
+                console.log('Nombre del negocio:', BARBER_CONFIG.businessName);
+            } else {
+                console.error('❌ BARBER_CONFIG no está definido');
+            }
+        }, 500);
+    </script>
+</body>
+</html>
+

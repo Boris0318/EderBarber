@@ -8,7 +8,7 @@
 // ===================================
 const BARBER_CONFIG = {
     // Business Name
-    businessName: 'Richy Barbers ',
+    businessName: 'Richy Barbers',
     
     // Contact Information
     phone: '(555) 123-4567',
