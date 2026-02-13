@@ -8,7 +8,7 @@
 // ===================================
 const BARBER_CONFIG = {
     // Business Name
-    businessName: 'Barbers Tlalpan',
+    businessName: 'Richy Barber',
     
     // Contact Information
     phone: '(555) 123-4567',
