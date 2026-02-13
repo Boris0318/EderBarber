@@ -462,6 +462,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // Initialize Dynamic Content Function
 // ===================================
 function initializeDynamicContent() {
+    console.log('Initializing dynamic content with:', BARBER_CONFIG.businessName);
+    
     // Update page title and meta description
     document.title = `${BARBER_CONFIG.businessName} - ${BARBER_CONFIG.pageTitle}`;
     const metaDescription = document.querySelector('meta[name="description"]');
@@ -509,6 +511,8 @@ function initializeDynamicContent() {
     
     // Update business hours
     updateBusinessHours();
+    
+    console.log('Dynamic content initialized successfully');
 }
 
 // Helper function to update elements by class name
