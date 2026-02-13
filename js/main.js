@@ -2,7 +2,44 @@
 // Main JavaScript for Eder Barber Shop
 // ===================================
 
+// ===================================
+// GLOBAL CONFIGURATION
+// Change these values to update throughout the entire website
+// ===================================
+const BARBER_CONFIG = {
+    // Business Name
+    businessName: 'Barbers Tlalpan',
+    
+    // Contact Information
+    phone: '(555) 123-4567',
+    phoneLink: '+15551234567',
+    email: 'info@ederbarbershop.com',
+    address: 'Calle Principal 123',
+    addressLine2: 'Zona Centro',
+    addressLine3: 'Ciudad, Estado 12345',
+    
+    // Social Media Links
+    facebook: '#',
+    instagram: '#',
+    twitter: '#',
+    tiktok: '#',
+    
+    // Business Hours
+    hoursWeekday: '9:00 AM - 8:00 PM',
+    hoursSaturday: '9:00 AM - 7:00 PM',
+    hoursSunday: '10:00 AM - 5:00 PM',
+    
+    // SEO
+    metaDescription: 'Cortes de cabello profesionales, arreglo de barba y servicios de estilismo. ¡Reserva tu cita hoy!',
+    pageTitle: 'Servicios Profesionales de Barbería'
+};
+
 document.addEventListener('DOMContentLoaded', function() {
+    
+    // ===================================
+    // Initialize Dynamic Content
+    // ===================================
+    initializeDynamicContent();
     
     // ===================================
     // Mobile Menu Toggle
@@ -416,10 +453,93 @@ document.addEventListener('DOMContentLoaded', function() {
     // ===================================
     // Console Welcome Message
     // ===================================
-    console.log('%c👋 ¡Bienvenido a Eder Barber Shop!', 'font-size: 20px; font-weight: bold; color: #d4af37;');
+    console.log(`%c👋 ¡Bienvenido a ${BARBER_CONFIG.businessName}!`, 'font-size: 20px; font-weight: bold; color: #d4af37;');
     console.log('%cSitio web diseñado con ❤️ por Sirob Labs', 'font-size: 14px; color: #888;');
 
 });
+
+// ===================================
+// Initialize Dynamic Content Function
+// ===================================
+function initializeDynamicContent() {
+    // Update page title and meta description
+    document.title = `${BARBER_CONFIG.businessName} - ${BARBER_CONFIG.pageTitle}`;
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+        metaDescription.setAttribute('content', `${BARBER_CONFIG.businessName} - ${BARBER_CONFIG.metaDescription}`);
+    }
+    
+    // Update all business name occurrences
+    updateElementsByClass('business-name', BARBER_CONFIG.businessName);
+    
+    // Update contact information
+    updateElementsByClass('contact-phone', BARBER_CONFIG.phone);
+    updateElementsByClass('contact-email', BARBER_CONFIG.email);
+    
+    // Update phone links
+    document.querySelectorAll('a[href^="tel:"]').forEach(link => {
+        link.href = `tel:${BARBER_CONFIG.phoneLink}`;
+        if (link.classList.contains('contact-phone') || link.textContent.includes('555')) {
+            link.textContent = BARBER_CONFIG.phone;
+        }
+    });
+    
+    // Update email links
+    document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
+        link.href = `mailto:${BARBER_CONFIG.email}`;
+        if (link.classList.contains('contact-email')) {
+            link.textContent = BARBER_CONFIG.email;
+        }
+    });
+    
+    // Update address
+    const addressElements = document.querySelectorAll('.contact-address');
+    addressElements.forEach(element => {
+        element.innerHTML = `${BARBER_CONFIG.address}<br>${BARBER_CONFIG.addressLine2}<br>${BARBER_CONFIG.addressLine3}`;
+    });
+    
+    // Update social media links
+    updateSocialLinks();
+    
+    // Update business hours
+    updateBusinessHours();
+}
+
+// Helper function to update elements by class name
+function updateElementsByClass(className, content) {
+    const elements = document.querySelectorAll(`.${className}`);
+    elements.forEach(element => {
+        element.textContent = content;
+    });
+}
+
+// Update social media links
+function updateSocialLinks() {
+    document.querySelectorAll('a[href*="facebook"]').forEach(link => {
+        if (BARBER_CONFIG.facebook !== '#') link.href = BARBER_CONFIG.facebook;
+    });
+    document.querySelectorAll('a[href*="instagram"]').forEach(link => {
+        if (BARBER_CONFIG.instagram !== '#') link.href = BARBER_CONFIG.instagram;
+    });
+    document.querySelectorAll('a[href*="twitter"]').forEach(link => {
+        if (BARBER_CONFIG.twitter !== '#') link.href = BARBER_CONFIG.twitter;
+    });
+    document.querySelectorAll('a[href*="tiktok"]').forEach(link => {
+        if (BARBER_CONFIG.tiktok !== '#') link.href = BARBER_CONFIG.tiktok;
+    });
+}
+
+// Update business hours
+function updateBusinessHours() {
+    const hoursContainer = document.querySelector('.info-card ul');
+    if (hoursContainer) {
+        hoursContainer.innerHTML = `
+            <li><strong>Lunes - Viernes:</strong> ${BARBER_CONFIG.hoursWeekday}</li>
+            <li><strong>Sábado:</strong> ${BARBER_CONFIG.hoursSaturday}</li>
+            <li><strong>Domingo:</strong> ${BARBER_CONFIG.hoursSunday}</li>
+        `;
+    }
+}
 
 // ===================================
 // Utility Functions
