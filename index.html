@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Calendly -->
+    <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
@@ -330,51 +332,13 @@
                 <p class="section-subtitle">Agenda Tu Próxima Visita</p>
             </div>
             <div class="booking-content">
-                <form class="booking-form" id="bookingForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="name">Nombre Completo *</label>
-                            <input type="text" id="name" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Número de Teléfono *</label>
-                            <input type="tel" id="phone" name="phone" required>
-                        </div>
+                <!-- Calendly inline widget -->
+                <div class="calendly-widget-wrapper">
+                    <div class="calendly-inline-widget"
+                         data-url="https://calendly.com/borisesgal/haircut?background_color=1a1a1a&text_color=ffffff&primary_color=d4af37"
+                         style="min-width:320px;height:700px;">
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="email">Correo Electrónico</label>
-                            <input type="email" id="email" name="email">
-                        </div>
-                        <div class="form-group">
-                            <label for="service">Servicio *</label>
-                            <select id="service" name="service" required>
-                                <option value="">Selecciona un servicio</option>
-                                <option value="classic-haircut">Corte Clásico - $25</option>
-                                <option value="modern-styling">Estilo Moderno - $30</option>
-                                <option value="beard-trim">Recorte y Diseño de Barba - $20</option>
-                                <option value="hot-towel-shave">Afeitado con Toalla Caliente - $35</option>
-                                <option value="kids-haircut">Corte Infantil - $18</option>
-                                <option value="premium-package">Paquete Premium - $65</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="date">Fecha Preferida *</label>
-                            <input type="date" id="date" name="date" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="time">Hora Preferida *</label>
-                            <input type="time" id="time" name="time" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Notas Adicionales</label>
-                        <textarea id="message" name="message" rows="4"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-lg">Solicitar Cita</button>
-                </form>
+                </div>
                 <div class="booking-info">
                     <div class="info-card">
                         <i class="fas fa-clock"></i>
@@ -497,7 +461,9 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <script src="js/main.js"></script>
+    <script src="js/main.js?v=2.4"></script>
+    <!-- Calendly widget script -->
+    <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
 </body>
 </html>
 

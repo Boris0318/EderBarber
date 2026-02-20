@@ -716,50 +716,14 @@ img {
     align-items: start;
 }
 
-.booking-form {
-    background-color: rgba(255, 255, 255, 0.05);
-    padding: var(--spacing-md);
+.calendly-widget-wrapper {
     border: 2px solid rgba(212, 175, 55, 0.2);
+    overflow: hidden;
+    background-color: #1a1a1a;
 }
 
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-sm);
-}
-
-.form-group {
-    margin-bottom: var(--spacing-sm);
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: var(--text-light);
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
+.calendly-inline-widget {
     width: 100%;
-    padding: 0.75rem;
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(212, 175, 55, 0.3);
-    color: var(--text-light);
-    font-family: var(--font-primary);
-    transition: var(--transition);
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    background-color: rgba(255, 255, 255, 0.15);
 }
 
 .booking-info {
@@ -1105,10 +1069,6 @@ img {
     }
     
     .team-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .form-row {
         grid-template-columns: 1fr;
     }
     

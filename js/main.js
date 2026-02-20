@@ -153,39 +153,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ===================================
-    // Booking Form Handling
+    // Booking — handled by Calendly widget
     // ===================================
-    const bookingForm = document.getElementById('bookingForm');
-
-    bookingForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        // Get form data
-        const formData = {
-            name: document.getElementById('name').value,
-            phone: document.getElementById('phone').value,
-            email: document.getElementById('email').value,
-            service: document.getElementById('service').value,
-            date: document.getElementById('date').value,
-            time: document.getElementById('time').value,
-            message: document.getElementById('message').value
-        };
-
-        // Validate form
-        if (!formData.name || !formData.phone || !formData.service || !formData.date || !formData.time) {
-            showNotification('Por favor completa todos los campos requeridos.', 'error');
-            return;
-        }
-
-        // Here you would typically send the data to a server
-        // For now, we'll just show a success message
-        console.log('Booking request:', formData);
-        
-        showNotification('¡Gracias! Tu solicitud de cita ha sido recibida. Te contactaremos pronto para confirmar.', 'success');
-        
-        // Reset form
-        bookingForm.reset();
-    });
 
     // ===================================
     // Notification System

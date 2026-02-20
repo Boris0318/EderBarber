@@ -1,0 +1,1860 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Seguimiento de Prospectos - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: #0078d4;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Side Menu */
+        .layout {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            padding: 1rem 0;
+        }
+
+        .menu-item {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: background 0.2s;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .menu-item:hover {
+            background: #f0f0f0;
+        }
+
+        .menu-item.active {
+            background: #e3f2fd;
+            color: #0078d4;
+            border-left: 3px solid #0078d4;
+        }
+
+        .menu-item .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #0078d4;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid #0078d4;
+        }
+
+        .stat-card .label {
+            color: #666;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0078d4;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #0078d4;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #006cbd;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-success {
+            background: #107c10;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #d13438;
+            color: white;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.625rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Lists */
+        .list-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .list-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .list-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .list-item-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #0078d4;
+        }
+
+        .list-item-meta {
+            font-size: 0.875rem;
+            color: #666;
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-blue {
+            background: #e3f2fd;
+            color: #0078d4;
+        }
+
+        .badge-green {
+            background: #e8f5e9;
+            color: #107c10;
+        }
+
+        .badge-yellow {
+            background: #fff9e6;
+            color: #f59e0b;
+        }
+
+        .badge-red {
+            background: #ffebee;
+            color: #d13438;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.625rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.375rem;
+            top: 0.25rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #0078d4;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px #0078d4;
+        }
+
+        .timeline-date {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alert-warning {
+            background: #fff9e6;
+            border-left: 4px solid #f59e0b;
+            color: #92400e;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            border-left: 4px solid #0078d4;
+            color: #004085;
+        }
+
+        /* Progress Bar */
+        .progress {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #0078d4;
+            transition: width 0.3s;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: #0078d4;
+            border-bottom-color: #0078d4;
+            font-weight: 600;
+        }
+
+        .tab:hover {
+            background: #f5f5f5;
+        }
+
+        /* Detail View */
+        .detail-section {
+            margin-bottom: 2rem;
+        }
+
+        .detail-section-header {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-item {
+            padding: 0.75rem;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        /* Chart Placeholder */
+        .chart-placeholder {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f5f5f5 100%);
+            height: 250px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Table */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .table tr:hover {
+            background: #f9f9f9;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+
+        .filter-chip.active {
+            background: #0078d4;
+            color: white;
+            border-color: #0078d4;
+        }
+
+        /* Icons */
+        .icon {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+        }
+
+        /* Header with back button */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #0078d4;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+
+            .menu-item span {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <h1>📊 Sistema de Seguimiento de Prospectos</h1>
+        <div class="user-info">
+            <span>👤 María García</span>
+        </div>
+    </div>
+
+    <!-- Layout -->
+    <div class="layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <a href="#" class="menu-item active" onclick="showScreen('dashboard')">
+                <span class="icon">🏠</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showScreen('prospectos')">
+                <span class="icon">👥</span>
+                <span>Prospectos</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showScreen('hilos')">
+                <span class="icon">🧵</span>
+                <span>Hilos</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showScreen('productos')">
+                <span class="icon">🛍️</span>
+                <span>Productos</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showScreen('evaluaciones')">
+                <span class="icon">🔬</span>
+                <span>Evaluaciones</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showScreen('reportes')">
+                <span class="icon">📊</span>
+                <span>Reportes</span>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            
+            <!-- SCREEN 1: DASHBOARD -->
+            <div id="dashboard" class="screen active">
+                <h2 class="page-title">Dashboard Ejecutivo</h2>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="label">Prospectos Activos</div>
+                        <div class="value">25</div>
+                    </div>
+                    <div class="stat-card" style="border-left-color: #107c10;">
+                        <div class="label">Clientes</div>
+                        <div class="value" style="color: #107c10;">48</div>
+                    </div>
+                    <div class="stat-card" style="border-left-color: #f59e0b;">
+                        <div class="label">Valor Pipeline</div>
+                        <div class="value" style="color: #f59e0b;">$450K</div>
+                    </div>
+                    <div class="stat-card" style="border-left-color: #8b5cf6;">
+                        <div class="label">Conversiones (Mes)</div>
+                        <div class="value" style="color: #8b5cf6;">3</div>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div class="card">
+                    <div class="card-header">📈 Prospectos por Etapa</div>
+                    <div class="chart-placeholder">
+                        [Gráfico: Entrevista Inicial (8) | Evaluación (7) | Propuesta (5) | Prueba Industrial (3) | Orden Compra (2)]
+                    </div>
+                </div>
+
+                <!-- Alerts -->
+                <div class="card">
+                    <div class="card-header">⚠️ Alertas y Pendientes</div>
+                    <div class="alert alert-warning">
+                        <span>⏰</span>
+                        <span><strong>5 fechas compromiso</strong> esta semana</span>
+                    </div>
+                    <div class="alert alert-info">
+                        <span>📄</span>
+                        <span><strong>3 propuestas</strong> pendientes de envío</span>
+                    </div>
+                    <div class="alert alert-info">
+                        <span>🔬</span>
+                        <span><strong>2 pruebas industriales</strong> programadas</span>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">📋 Últimos Hilos de Actividad</div>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-date">Hoy, 10:30 AM</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Propuesta enviada - ACME Corporation</div>
+                                <div style="font-size: 0.875rem; color: #666;">Propuesta técnico-económica por $45,000 enviada al cliente</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">Ayer, 3:15 PM</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Prueba de laboratorio completada - TechIndustries</div>
+                                <div style="font-size: 0.875rem; color: #666;">Resultados aprobados, proceder con propuesta</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">15 Feb, 11:00 AM</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Nueva entrevista inicial - GlobalChem SA</div>
+                                <div style="font-size: 0.875rem; color: #666;">Interés en Producto A y B, volumen estimado 500Kg/mes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCREEN 2: PROSPECTOS LIST -->
+            <div id="prospectos" class="screen">
+                <div class="page-header">
+                    <h2 class="page-title">Prospectos y Clientes</h2>
+                    <button class="btn btn-primary" onclick="showModal('modalNuevoProspecto')">
+                        ➕ Nuevo Prospecto
+                    </button>
+                </div>
+
+                <!-- Search and Filters -->
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="🔍 Buscar por nombre, contacto...">
+                </div>
+
+                <div class="filters">
+                    <div class="filter-chip active">Todos (73)</div>
+                    <div class="filter-chip">Prospectos (25)</div>
+                    <div class="filter-chip">Clientes Activos (48)</div>
+                    <div class="filter-chip">Este Mes (12)</div>
+                </div>
+
+                <!-- Prospectos List -->
+                <div class="list-item" onclick="showScreen('detalleProspecto')">
+                    <div class="list-item-header">
+                        <div class="list-item-title">🏢 ACME Corporation</div>
+                        <span class="badge badge-blue">Propuesta Enviada</span>
+                    </div>
+                    <div>👤 Juan Pérez - CEO | ✉️ juan.perez@acme.com</div>
+                    <div class="list-item-meta">
+                        <span>💰 Valor: $45,000</span>
+                        <span>📅 Creado: Hace 15 días</span>
+                        <span>🛍️ 2 productos</span>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <div class="list-item-header">
+                        <div class="list-item-title">🏢 TechIndustries SA</div>
+                        <span class="badge badge-yellow">En Evaluación</span>
+                    </div>
+                    <div>👤 Ana López - Gerente Técnico | ✉️ ana.lopez@tech.com</div>
+                    <div class="list-item-meta">
+                        <span>💰 Valor: $68,000</span>
+                        <span>📅 Creado: Hace 8 días</span>
+                        <span>🛍️ 3 productos</span>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <div class="list-item-header">
+                        <div class="list-item-title">🏢 GlobalChem SA</div>
+                        <span class="badge badge-green">Cliente Activo</span>
+                    </div>
+                    <div>👤 Carlos Mendoza - Director Operaciones | ✉️ cmendoza@global.com</div>
+                    <div class="list-item-meta">
+                        <span>💰 Valor: $125,000</span>
+                        <span>📅 Cliente desde: 3 meses</span>
+                        <span>🛍️ 5 productos</span>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <div class="list-item-header">
+                        <div class="list-item-title">🏢 InnovatePlastics</div>
+                        <span class="badge badge-blue">Entrevista Inicial</span>
+                    </div>
+                    <div>👤 Laura Ramírez - Jefa de Compras | ✉️ lramirez@innovate.com</div>
+                    <div class="list-item-meta">
+                        <span>💰 Valor: $32,000</span>
+                        <span>📅 Creado: Hace 2 días</span>
+                        <span>🛍️ 1 producto</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCREEN 3: DETALLE PROSPECTO -->
+            <div id="detalleProspecto" class="screen">
+                <div class="page-header">
+                    <div>
+                        <a href="#" class="back-btn" onclick="showScreen('prospectos')">← Volver</a>
+                        <h2 class="page-title">🏢 ACME Corporation</h2>
+                    </div>
+                    <button class="btn btn-secondary">✏️ Editar</button>
+                </div>
+
+                <!-- Información General -->
+                <div class="card">
+                    <div class="detail-section">
+                        <div class="detail-section-header">Información General</div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">📍 Dirección</div>
+                                <div class="info-value">Av. Principal 123, Col. Centro, CDMX</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">👤 Responsable</div>
+                                <div class="info-value">María García</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">📅 Fecha Creación</div>
+                                <div class="info-value">01 Febrero 2026</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">🎯 Estado</div>
+                                <div class="info-value"><span class="badge badge-blue">Prospecto</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contactos -->
+                <div class="card">
+                    <div class="detail-section">
+                        <div class="detail-section-header">
+                            👥 Contactos (3)
+                            <button class="btn btn-primary btn-sm" onclick="showModal('modalNuevoContacto')">➕ Agregar</button>
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Posición</th>
+                                    <th>Teléfono</th>
+                                    <th>Email</th>
+                                    <th>Principal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Juan Pérez</td>
+                                    <td>CEO</td>
+                                    <td>555-1234</td>
+                                    <td>juan.perez@acme.com</td>
+                                    <td><span class="badge badge-green">✓ Sí</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Ana López</td>
+                                    <td>Gerente de Compras</td>
+                                    <td>555-5678</td>
+                                    <td>ana.lopez@acme.com</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>Roberto Sánchez</td>
+                                    <td>Ingeniero de Planta</td>
+                                    <td>555-9012</td>
+                                    <td>roberto.s@acme.com</td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Productos de Interés -->
+                <div class="card">
+                    <div class="detail-section">
+                        <div class="detail-section-header">
+                            🛍️ Productos de Interés (2)
+                            <button class="btn btn-primary btn-sm" onclick="showModal('modalNuevoProducto')">➕ Agregar</button>
+                        </div>
+                        <div class="list-item">
+                            <div class="list-item-header">
+                                <div class="list-item-title">Producto A - Aditivo Industrial</div>
+                                <span class="badge badge-yellow">En Evaluación</span>
+                            </div>
+                            <div style="margin: 0.5rem 0; color: #666;">
+                                <strong>Aplicación:</strong> Mejora de resistencia en proceso de moldeo por inyección
+                            </div>
+                            <div class="list-item-meta">
+                                <span>📦 Volumen: 300 Kg/mes</span>
+                                <span>💵 Precio Unit: $75/Kg</span>
+                                <span>💰 Valor Total: $22,500</span>
+                            </div>
+                        </div>
+                        <div class="list-item">
+                            <div class="list-item-header">
+                                <div class="list-item-title">Producto B - Plastificante</div>
+                                <span class="badge badge-blue">Propuesto</span>
+                            </div>
+                            <div style="margin: 0.5rem 0; color: #666;">
+                                <strong>Aplicación:</strong> Flexibilización de compuestos de PVC
+                            </div>
+                            <div class="list-item-meta">
+                                <span>📦 Volumen: 200 Kg/mes</span>
+                                <span>💵 Precio Unit: $112.50/Kg</span>
+                                <span>💰 Valor Total: $22,500</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline de Hilos -->
+                <div class="card">
+                    <div class="detail-section">
+                        <div class="detail-section-header">
+                            🧵 Timeline de Hilos (5)
+                            <button class="btn btn-primary btn-sm" onclick="showModal('modalNuevoHilo')">➕ Nuevo Hilo</button>
+                        </div>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-date">15 Feb 2026, 10:30 AM</div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">📄 Propuesta Técnico-Económica Enviada</div>
+                                    <div style="font-size: 0.875rem; margin-top: 0.5rem;">
+                                        Propuesta completa enviada por $45,000 MXN. Incluye ambos productos con especificaciones técnicas. 
+                                        Cliente confirmó recepción y revisará con equipo técnico.
+                                    </div>
+                                    <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #e0e0e0;">
+                                        <strong>Pasos a seguir:</strong> Seguimiento telefónico en 3 días
+                                    </div>
+                                    <div style="margin-top: 0.5rem; font-size: 0.875rem;">
+                                        📅 Fecha compromiso: 18 Febrero 2026
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">10 Feb 2026, 3:00 PM</div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">🔬 Prueba de Laboratorio Completada</div>
+                                    <div style="font-size: 0.875rem; margin-top: 0.5rem;">
+                                        Resultados positivos para Producto A. Cumple con especificaciones requeridas.
+                                        Aprobado para elaboración de propuesta formal.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">05 Feb 2026, 11:00 AM</div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">👥 Entrevista Inicial con Equipo Técnico</div>
+                                    <div style="font-size: 0.875rem; margin-top: 0.5rem;">
+                                        Reunión con Juan Pérez (CEO) y Ana López (Gerente Compras). Identificaron necesidad de 
+                                        mejorar propiedades mecánicas en su proceso actual. Interés alto en nuestros productos.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Evaluaciones -->
+                <div class="card">
+                    <div class="detail-section">
+                        <div class="detail-section-header">
+                            🔬 Evaluaciones y Pruebas (2)
+                            <button class="btn btn-primary btn-sm" onclick="showModal('modalNuevaEvaluacion')">➕ Nueva</button>
+                        </div>
+                        <div class="list-item">
+                            <div class="list-item-header">
+                                <div class="list-item-title">Prueba de Laboratorio - Producto A</div>
+                                <span class="badge badge-green">✓ Aprobada</span>
+                            </div>
+                            <div class="list-item-meta">
+                                <span>📅 Fecha: 10 Febrero 2026</span>
+                                <span>💰 Equipo: $3,500</span>
+                                <span>✅ Aprobado para propuesta</span>
+                            </div>
+                        </div>
+                        <div class="list-item">
+                            <div class="list-item-header">
+                                <div class="list-item-title">Prueba Industrial - Producto A + B</div>
+                                <span class="badge badge-yellow">⏳ Programada</span>
+                            </div>
+                            <div class="list-item-meta">
+                                <span>📅 Fecha: 20 Febrero 2026</span>
+                                <span>💰 Equipo: $8,000</span>
+                                <span>⏱️ Pendiente</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCREEN 4: HILOS DE SEGUIMIENTO -->
+            <div id="hilos" class="screen">
+                <div class="page-header">
+                    <h2 class="page-title">🧵 Hilos de Seguimiento</h2>
+                    <button class="btn btn-primary" onclick="showModal('modalNuevoHilo')">➕ Nuevo Hilo</button>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters">
+                    <div class="filter-chip active">Todos (45)</div>
+                    <div class="filter-chip">Esta Semana (12)</div>
+                    <div class="filter-chip">Pendientes (8)</div>
+                    <div class="filter-chip">Con Fecha Compromiso (15)</div>
+                </div>
+
+                <!-- Hilos List -->
+                <div class="list-item">
+                    <div class="list-item-header">
+                        <div>
+                            <div class="list-item-title">📄 Propuesta Enviada - ACME Corporation</div>
+                            <div style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">
+                                Propuesta técnico-económica por $45,000 enviada al cliente
+                            </div>
+                        </div>
+                        <span class="badge badge-yellow">En Proceso</span>
+                    </div>
+                    <div class="list-item-meta">
+                        <span>📅 15 Feb 2026, 10:30</span>
+                        <span>👤 María García</span>
+                        <span>⏰ Compromiso: 18 Feb</span>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <div class="list-item-header">
+                        <div>
+                            <div class="list-item-title">🔬 Prueba de Laboratorio - TechIndustries</div>
+                            <div style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">
+                                Resultados aprobados, proceder con propuesta
+                            </div>
+                        </div>
+                        <span class="badge badge-green">Completado</span>
+                    </div>
+                    <div class="list-item-meta">
+                        <span>📅 14 Feb 2026, 15:15</span>
+                        <span>👤 Carlos Ruiz</span>
+                        <span>✓ Sin pendientes</span>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <div class="list-item-header">
+                        <div>
+                            <div class="list-item-title">👥 Entrevista Inicial - GlobalChem SA</div>
+                            <div style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">
+                                Interés en Producto A y B, volumen estimado 500Kg/mes
+                            </div>
+                        </div>
+                        <span class="badge badge-blue">Completado</span>
+                    </div>
+                    <div class="list-item-meta">
+                        <span>📅 13 Feb 2026, 11:00</span>
+                        <span>👤 María García</span>
+                        <span>⏰ Compromiso: 16 Feb</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCREEN 5: PRODUCTOS Y OPORTUNIDADES -->
+            <div id="productos" class="screen">
+                <div class="page-header">
+                    <h2 class="page-title">🛍️ Productos y Oportunidades</h2>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="label">Oportunidades Activas</div>
+                        <div class="value">42</div>
+                    </div>
+                    <div class="stat-card" style="border-left-color: #107c10;">
+                        <div class="label">Valor Total Pipeline</div>
+                        <div class="value" style="color: #107c10;">$615K</div>
+                    </div>
+                    <div class="stat-card" style="border-left-color: #f59e0b;">
+                        <div class="label">En Evaluación</div>
+                        <div class="value" style="color: #f59e0b;">18</div>
+                    </div>
+                    <div class="stat-card" style="border-left-color: #8b5cf6;">
+                        <div class="label">Tasa de Conversión</div>
+                        <div class="value" style="color: #8b5cf6;">38%</div>
+                    </div>
+                </div>
+
+                <!-- Productos más cotizados -->
+                <div class="card">
+                    <div class="card-header">🏆 Productos Más Cotizados</div>
+                    <div class="list-item">
+                        <div class="list-item-header">
+                            <div class="list-item-title">Producto A - Aditivo Industrial</div>
+                            <span class="badge badge-green">15 oportunidades</span>
+                        </div>
+                        <div style="margin: 0.5rem 0;">
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 75%;"></div>
+                            </div>
+                        </div>
+                        <div class="list-item-meta">
+                            <span>💰 Valor Total: $280,000</span>
+                            <span>📊 38% del pipeline</span>
+                            <span>✅ 6 convertidas</span>
+                        </div>
+                    </div>
+
+                    <div class="list-item">
+                        <div class="list-item-header">
+                            <div class="list-item-title">Producto B - Plastificante</div>
+                            <span class="badge badge-yellow">12 oportunidades</span>
+                        </div>
+                        <div style="margin: 0.5rem 0;">
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 60%;"></div>
+                            </div>
+                        </div>
+                        <div class="list-item-meta">
+                            <span>💰 Valor Total: $195,000</span>
+                            <span>📊 26% del pipeline</span>
+                            <span>✅ 4 convertidas</span>
+                        </div>
+                    </div>
+
+                    <div class="list-item">
+                        <div class="list-item-header">
+                            <div class="list-item-title">Producto C - Estabilizador UV</div>
+                            <span class="badge badge-blue">8 oportunidades</span>
+                        </div>
+                        <div style="margin: 0.5rem 0;">
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 40%;"></div>
+                            </div>
+                        </div>
+                        <div class="list-item-meta">
+                            <span>💰 Valor Total: $140,000</span>
+                            <span>📊 19% del pipeline</span>
+                            <span>✅ 3 convertidas</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Oportunidades por Etapa -->
+                <div class="card">
+                    <div class="card-header">📊 Oportunidades por Etapa</div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Etapa</th>
+                                <th>Cantidad</th>
+                                <th>Valor Total</th>
+                                <th>Probabilidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-blue">Interés Inicial</span></td>
+                                <td>12</td>
+                                <td>$180,000</td>
+                                <td>20%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-yellow">En Evaluación</span></td>
+                                <td>18</td>
+                                <td>$265,000</td>
+                                <td>50%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-yellow">Propuesto</span></td>
+                                <td>8</td>
+                                <td>$125,000</td>
+                                <td>70%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-green">Aprobado</span></td>
+                                <td>4</td>
+                                <td>$45,000</td>
+                                <td>95%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SCREEN 6: EVALUACIONES -->
+            <div id="evaluaciones" class="screen">
+                <div class="page-header">
+                    <h2 class="page-title">🔬 Evaluaciones y Pruebas</h2>
+                    <button class="btn btn-primary" onclick="showModal('modalNuevaEvaluacion')">➕ Nueva Evaluación</button>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tab active">Todas (24)</div>
+                    <div class="tab">Laboratorio (15)</div>
+                    <div class="tab">Industrial (9)</div>
+                    <div class="tab">Programadas (5)</div>
+                </div>
+
+                <!-- Evaluaciones List -->
+                <div class="list-item">
+                    <div class="list-item-header">
+                        <div>
+                            <div class="list-item-title">Prueba de Laboratorio - Producto A</div>
+                            <div style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">
+                                ACME Corporation
+                            </div>
+                        </div>
+                        <span class="badge badge-green">✓ Aprobada</span>
+                    </div>
+                    <div style="margin: 0.75rem 0; padding: 0.75rem; background: #f9f9f9; border-radius: 4px;">
+                        <strong>Resultados:</strong> Cumple especificaciones requeridas. Mejora de 25% en resistencia mecánica. 
+                        Cliente satisfecho con resultados. Aprobado para propuesta formal.
+                    </div>
+                    <div class="list-item-meta">
+                        <span>📅 10 Feb 2026</span>
+                        <span>💰 Equipo: $3,500</span>
+                        <span>✅ Aprobado para propuesta</span>
+                        <span>📎 Reporte adjunto</span>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <div class="list-item-header">
+                        <div>
+                            <div class="list-item-title">Prueba Industrial - Producto A + B</div>
+                            <div style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">
+                                ACME Corporation
+                            </div>
+                        </div>
+                        <span class="badge badge-yellow">⏳ Programada</span>
+                    </div>
+                    <div style="margin: 0.75rem 0; padding: 0.75rem; background: #fff9e6; border-radius: 4px;">
+                        <strong>Requerimientos:</strong> Dosificador automático, mezclador industrial de 100L, 
+                        sistema de monitoreo de temperatura. Prueba en línea de producción del cliente.
+                    </div>
+                    <div class="list-item-meta">
+                        <span>📅 20 Feb 2026 (en 5 días)</span>
+                        <span>💰 Equipo: $8,000</span>
+                        <span>⏱️ Pendiente</span>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <div class="list-item-header">
+                        <div>
+                            <div class="list-item-title">Prueba de Laboratorio - Producto C</div>
+                            <div style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">
+                                TechIndustries SA
+                            </div>
+                        </div>
+                        <span class="badge badge-green">✓ Completada</span>
+                    </div>
+                    <div style="margin: 0.75rem 0; padding: 0.75rem; background: #f9f9f9; border-radius: 4px;">
+                        <strong>Resultados:</strong> Excelente desempeño en pruebas de exposición UV. 
+                        Retención de color superior al 90% después de 500 horas.
+                    </div>
+                    <div class="list-item-meta">
+                        <span>📅 08 Feb 2026</span>
+                        <span>💰 Equipo: $2,800</span>
+                        <span>✅ Aprobado para propuesta</span>
+                        <span>📎 Reporte adjunto</span>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <div class="list-item-header">
+                        <div>
+                            <div class="list-item-title">Prueba Industrial - Producto B</div>
+                            <div style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">
+                                GlobalChem SA
+                            </div>
+                        </div>
+                        <span class="badge badge-red">✗ Rechazada</span>
+                    </div>
+                    <div style="margin: 0.75rem 0; padding: 0.75rem; background: #ffebee; border-radius: 4px;">
+                        <strong>Resultados:</strong> No cumplió con viscosidad requerida para su proceso específico. 
+                        Cliente requiere formulación especial. Pendiente desarrollo de muestra modificada.
+                    </div>
+                    <div class="list-item-meta">
+                        <span>📅 05 Feb 2026</span>
+                        <span>💰 Equipo: $5,500</span>
+                        <span>❌ No aprobado</span>
+                        <span>📎 Reporte adjunto</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCREEN 7: REPORTES -->
+            <div id="reportes" class="screen">
+                <h2 class="page-title">📊 Reportes y Análisis</h2>
+
+                <!-- Filters -->
+                <div class="card">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Período</label>
+                            <select>
+                                <option>Este Mes</option>
+                                <option>Último Trimestre</option>
+                                <option>Este Año</option>
+                                <option>Personalizado</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Responsable</label>
+                            <select>
+                                <option>Todos</option>
+                                <option>María García</option>
+                                <option>Carlos Ruiz</option>
+                                <option>Ana Martínez</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tiempo de Conversión -->
+                <div class="card">
+                    <div class="card-header">⏱️ Tiempo Promedio de Conversión</div>
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 3rem; font-weight: 600; color: #0078d4;">45 días</div>
+                        <div style="color: #666; margin-top: 0.5rem;">Desde primer contacto hasta orden de compra</div>
+                    </div>
+                    <div class="chart-placeholder" style="height: 200px;">
+                        [Gráfico de línea temporal mostrando evolución mes a mes]
+                    </div>
+                </div>
+
+                <!-- Funnel de Conversión -->
+                <div class="card">
+                    <div class="card-header">📈 Funnel de Conversión</div>
+                    <div style="padding: 1rem;">
+                        <div style="margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Prospectos Totales</span>
+                                <span><strong>50</strong> (100%)</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 100%; background: #0078d4;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>En Evaluación</span>
+                                <span><strong>35</strong> (70%)</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 70%; background: #f59e0b;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Propuesta Enviada</span>
+                                <span><strong>20</strong> (40%)</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 40%; background: #8b5cf6;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Convertidos a Clientes</span>
+                                <span><strong>12</strong> (24%)</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 24%; background: #107c10;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Performers -->
+                <div class="card">
+                    <div class="card-header">🏆 Desempeño por Responsable</div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Responsable</th>
+                                <th>Prospectos Activos</th>
+                                <th>Conversiones</th>
+                                <th>Valor Pipeline</th>
+                                <th>Tasa Conversión</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>María García</strong></td>
+                                <td>12</td>
+                                <td>5</td>
+                                <td>$185,000</td>
+                                <td><span class="badge badge-green">42%</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Carlos Ruiz</strong></td>
+                                <td>8</td>
+                                <td>4</td>
+                                <td>$145,000</td>
+                                <td><span class="badge badge-green">50%</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ana Martínez</strong></td>
+                                <td>5</td>
+                                <td>3</td>
+                                <td>$120,000</td>
+                                <td><span class="badge badge-green">60%</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Export Buttons -->
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button class="btn btn-primary">📥 Exportar a Excel</button>
+                    <button class="btn btn-secondary">📄 Generar PDF</button>
+                    <button class="btn btn-secondary">📧 Enviar por Email</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL: NUEVO PROSPECTO -->
+    <div id="modalNuevoProspecto" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">➕ Nuevo Prospecto</div>
+                <button class="close-btn" onclick="closeModal('modalNuevoProspecto')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nombre del Prospecto *</label>
+                    <input type="text" placeholder="Ej: ACME Corporation">
+                </div>
+                <div class="form-group">
+                    <label>Dirección</label>
+                    <textarea placeholder="Dirección completa del prospecto"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Responsable *</label>
+                        <select>
+                            <option>María García (Actual)</option>
+                            <option>Carlos Ruiz</option>
+                            <option>Ana Martínez</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select>
+                            <option selected>Prospecto</option>
+                            <option>Cliente Activo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #e0e0e0;">
+                <h4 style="margin-bottom: 1rem; color: #0078d4;">Contacto Principal</h4>
+
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" placeholder="Ej: Juan Pérez">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Posición/Cargo</label>
+                        <input type="text" placeholder="Ej: CEO">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="text" placeholder="555-1234">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" placeholder="correo@empresa.com">
+                </div>
+
+                <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #e0e0e0;">
+                <h4 style="margin-bottom: 1rem; color: #0078d4;">Primera Entrevista (Opcional)</h4>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <input type="date">
+                    </div>
+                    <div class="form-group">
+                        <label>Hora</label>
+                        <input type="time">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Notas de la Entrevista</label>
+                    <textarea placeholder="Resumen de la conversación inicial..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('modalNuevoProspecto')">Cancelar</button>
+                <button class="btn btn-primary" onclick="closeModal('modalNuevoProspecto')">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: NUEVO CONTACTO -->
+    <div id="modalNuevoContacto" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">➕ Agregar Contacto</div>
+                <button class="close-btn" onclick="closeModal('modalNuevoContacto')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nombre Completo *</label>
+                    <input type="text" placeholder="Ej: Roberto Sánchez">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Posición/Cargo *</label>
+                        <input type="text" placeholder="Ej: Ingeniero de Planta">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="text" placeholder="555-9012">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Correo Electrónico *</label>
+                    <input type="email" placeholder="correo@empresa.com">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox"> Marcar como contacto principal
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('modalNuevoContacto')">Cancelar</button>
+                <button class="btn btn-primary" onclick="closeModal('modalNuevoContacto')">💾 Agregar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: NUEVO PRODUCTO -->
+    <div id="modalNuevoProducto" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">➕ Agregar Producto de Interés</div>
+                <button class="close-btn" onclick="closeModal('modalNuevoProducto')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Producto *</label>
+                    <select>
+                        <option value="">Seleccionar producto...</option>
+                        <option>Producto A - Aditivo Industrial</option>
+                        <option>Producto B - Plastificante</option>
+                        <option>Producto C - Estabilizador UV</option>
+                        <option>Producto D - Modificador de Impacto</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Aplicación/Uso en proceso del cliente *</label>
+                    <textarea placeholder="Describe cómo el cliente usaría este producto en sus procesos..."></textarea>
+                </div>
+
+                <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #e0e0e0;">
+                <h4 style="margin-bottom: 1rem; color: #0078d4;">Estimación Comercial</h4>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Volumen Estimado *</label>
+                        <input type="number" placeholder="300">
+                    </div>
+                    <div class="form-group">
+                        <label>Unidad *</label>
+                        <select>
+                            <option>Kg</option>
+                            <option>Toneladas</option>
+                            <option>Litros</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Precio Unitario Estimado *</label>
+                        <input type="number" placeholder="75.00" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Valor Total (calculado)</label>
+                        <input type="text" value="$22,500.00" readonly style="background: #f0f0f0;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Etapa *</label>
+                    <select>
+                        <option>Interés Inicial</option>
+                        <option>En Evaluación</option>
+                        <option>Propuesto</option>
+                        <option>Aprobado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('modalNuevoProducto')">Cancelar</button>
+                <button class="btn btn-primary" onclick="closeModal('modalNuevoProducto')">💾 Agregar Producto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: NUEVO HILO -->
+    <div id="modalNuevoHilo" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">➕ Nuevo Hilo de Seguimiento</div>
+                <button class="close-btn" onclick="closeModal('modalNuevoHilo')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Prospecto/Cliente *</label>
+                    <select>
+                        <option value="">Seleccionar...</option>
+                        <option>ACME Corporation</option>
+                        <option>TechIndustries SA</option>
+                        <option>GlobalChem SA</option>
+                        <option>InnovatePlastics</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Etapa del Proceso *</label>
+                        <select>
+                            <option>Entrevista Inicial</option>
+                            <option>Evaluación Técnica</option>
+                            <option>Prueba de Laboratorio</option>
+                            <option>Propuesta Técnico-Económica</option>
+                            <option>Prueba Industrial</option>
+                            <option>Orden de Compra</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha y Hora *</label>
+                        <input type="datetime-local" value="2026-02-15T14:30">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Resumen de la Interacción *</label>
+                    <textarea rows="4" placeholder="Describe lo que se discutió en esta interacción..."></textarea>
+                    <button class="btn btn-secondary" style="margin-top: 0.5rem;">
+                        🎤 Transcribir con IA
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label>Pasos a Seguir</label>
+                    <textarea rows="3" placeholder="¿Qué acciones deben realizarse después de esta interacción?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha Compromiso</label>
+                    <input type="date">
+                </div>
+
+                <div class="form-group">
+                    <label>Adjuntar Archivos</label>
+                    <input type="file" multiple>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox"> Propuesta técnica enviada
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox"> Orden de compra recibida
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label>Estado *</label>
+                    <select>
+                        <option>Pendiente</option>
+                        <option>En Proceso</option>
+                        <option>Completado</option>
+                        <option>Cancelado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('modalNuevoHilo')">Cancelar</button>
+                <button class="btn btn-primary" onclick="closeModal('modalNuevoHilo')">💾 Guardar Hilo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: NUEVA EVALUACIÓN -->
+    <div id="modalNuevaEvaluacion" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">➕ Nueva Evaluación</div>
+                <button class="close-btn" onclick="closeModal('modalNuevaEvaluacion')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tipo de Evaluación *</label>
+                    <div style="display: flex; gap: 2rem;">
+                        <label>
+                            <input type="radio" name="tipoEval" value="lab" checked> Prueba de Laboratorio
+                        </label>
+                        <label>
+                            <input type="radio" name="tipoEval" value="industrial"> Prueba Industrial
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Prospecto/Cliente *</label>
+                        <select>
+                            <option value="">Seleccionar...</option>
+                            <option>ACME Corporation</option>
+                            <option>TechIndustries SA</option>
+                            <option>GlobalChem SA</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Producto Evaluado *</label>
+                        <select>
+                            <option value="">Seleccionar...</option>
+                            <option>Producto A</option>
+                            <option>Producto B</option>
+                            <option>Producto C</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha de Prueba *</label>
+                    <input type="date">
+                </div>
+
+                <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #e0e0e0;">
+                <h4 style="margin-bottom: 1rem; color: #0078d4;">Requerimientos de Equipo</h4>
+
+                <div class="form-group">
+                    <label>Descripción del Equipo</label>
+                    <textarea placeholder="Describe el equipo necesario para esta evaluación..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Monto de Equipo Necesario</label>
+                    <input type="number" placeholder="3500" step="0.01">
+                </div>
+
+                <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #e0e0e0;">
+                <h4 style="margin-bottom: 1rem; color: #0078d4;">Resultados</h4>
+
+                <div class="form-group">
+                    <label>Descripción de Resultados</label>
+                    <textarea rows="4" placeholder="Detalla los resultados obtenidos en la evaluación..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Adjuntar Reporte</label>
+                    <input type="file" accept=".pdf,.doc,.docx">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Estado *</label>
+                        <select>
+                            <option>Programada</option>
+                            <option>En Proceso</option>
+                            <option>Completada</option>
+                            <option>Aprobada</option>
+                            <option>Rechazada</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="padding-top: 2rem;">
+                            <input type="checkbox"> Aprobado para propuesta
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('modalNuevaEvaluacion')">Cancelar</button>
+                <button class="btn btn-primary" onclick="closeModal('modalNuevaEvaluacion')">💾 Guardar Evaluación</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation between screens
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show selected screen
+            document.getElementById(screenId).classList.add('active');
+            
+            // Update menu items
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.menu-item').classList.add('active');
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+
+        // Prevent default behavior for demo links
+        document.querySelectorAll('a[href="#"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+            });
+        });
+    </script>
+</body>
+</html>
