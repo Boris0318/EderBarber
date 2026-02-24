@@ -406,18 +406,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.classList.add('loaded');
     });
 
-    // ===================================
-    // Parallax Effect for Hero Section
-    // ===================================
-    const hero = document.querySelector('.hero');
-    
-    window.addEventListener('scroll', function() {
-        if (hero && window.pageYOffset < window.innerHeight) {
-            const scrolled = window.pageYOffset;
-            const parallaxSpeed = 0.5;
-            hero.style.transform = `translateY(${scrolled * parallaxSpeed}px)`;
-        }
-    });
 
     // ===================================
     // Console Welcome Message
